@@ -12,6 +12,7 @@ $Differences = Compare-Object $Before $After -property Computer
 foreach ($Difference in $Differences) {
     $ComputerName = $Difference.Computer 
     #Recreate an object with all properties
+    # And this is where this script take life!! += is super slow, check the other code to better understand
     $Results += $fullTab | Where-Object {$_.Computer -eq $ComputerName}
 }
 #With this method, it takes between 1 and 2 seconds with 20K lines in $fullTab and something like 1.5K lines in the Differences variables. More lines you have in $fulltab
