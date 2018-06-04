@@ -225,20 +225,45 @@ $SB = {
         $BIOSSMVersion = $ComputerBios.SMBIOSBIOSVersion 
 
         $DsregCmd = Invoke-Command -ScriptBlock {dsregcmd.exe /status} -Session $PSSession
-        [string]$DSRegAzureADJoin = ($DsregCmd | select-string -Pattern 'AzureAdJoined :').ToString().trim().Split(':')[1].trim()
-        if ($DSRegAzureADJoin -eq $null) {$DSRegAzureADJoin = 'N/A'}
+        [string]$DSRegAzureADJoin = ($DsregCmd | select-string -Pattern 'AzureAdJoined :')
+        if ($DSRegAzureADJoin -eq $null) {
+            $DSRegAzureADJoin = 'N/A'
+        }
+        else {
+            $DSRegAzureADJoin = $DSRegAzureADJoin.ToString().trim().Split(':')[1].trim()
+        }
 
-        [string]$DSRegKeyProvider = ($DsregCmd | select-string -Pattern 'KeyProvider :').ToString().trim().Split(':')[1].trim()
-        if ($DSRegKeyProvider -eq $null) {$DSRegKeyProvider = 'N/A'}
+        [string]$DSRegKeyProvider = ($DsregCmd | select-string -Pattern 'KeyProvider :')
+        if ($DSRegKeyProvider -eq $null) {
+            $DSRegKeyProvider = 'N/A'
+        }
+        else {
+            $DSRegKeyProvider = $DSRegKeyProvider.ToString().trim().Split(':')[1].trim()
+        }
 
-        [string]$DSRegTpmProtected = ($DsregCmd | select-string -Pattern 'TpmProtected :').ToString().trim().Split(':')[1].trim()
-        if ($DSRegTpmProtected -eq $null) {$DSRegTpmProtected = 'N/A'}
+        [string]$DSRegTpmProtected = ($DsregCmd | select-string -Pattern 'TpmProtected :')
+        if ($DSRegTpmProtected -eq $null) {
+            $DSRegTpmProtected = 'N/A'
+        }
+        else {
+            $DSRegTpmProtected = $DSRegTpmProtected.ToString().trim().Split(':')[1].trim()
+        }
 
-        [string]$DSRegDomainJoined = ($DsregCmd | select-string -Pattern 'DomainJoined :').ToString().trim().Split(':')[1].trim()
-        if ($DSRegDomainJoined -eq $null) {$DSRegDomainJoined = 'N/A'}
+        [string]$DSRegDomainJoined = ($DsregCmd | select-string -Pattern 'DomainJoined :')
+        if ($DSRegDomainJoined -eq $null) {
+            $DSRegDomainJoined = 'N/A'
+        }
+        else {
+            $DSRegDomainJoined = $DSRegDomainJoined.ToString().trim().Split(':')[1].trim()
+        }
 
-        [string]$DSRegWorkplaceJoined = ($DsregCmd | select-string -Pattern 'WorkplaceJoined :').ToString().trim().Split(':')[1].trim()
-        if ($DSRegWorkplaceJoined -eq $null) {$DSRegWorkplaceJoined = 'N/A'}
+        [string]$DSRegWorkplaceJoined = ($DsregCmd | select-string -Pattern 'WorkplaceJoined :')
+        if ($DSRegWorkplaceJoined -eq $null) {
+            $DSRegWorkplaceJoined = 'N/A'
+        }
+        else {
+            $DSRegWorkplaceJoined = $DSRegWorkplaceJoined.ToString().trim().Split(':')[1].trim()
+        }
 
         $props = @{
             DisplayName                = $_
