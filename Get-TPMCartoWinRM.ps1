@@ -226,7 +226,7 @@ $SB = {
 
         $DsregCmd = Invoke-Command -ScriptBlock {dsregcmd.exe /status} -Session $PSSession
         [string]$DSRegAzureADJoin = ($DsregCmd | select-string -Pattern 'AzureAdJoined :')
-        if ($DSRegAzureADJoin -eq $null) {
+        if ($DSRegAzureADJoin -eq "") {
             $DSRegAzureADJoin = 'N/A'
         }
         else {
@@ -234,7 +234,7 @@ $SB = {
         }
 
         [string]$DSRegKeyProvider = ($DsregCmd | select-string -Pattern 'KeyProvider :')
-        if ($DSRegKeyProvider -eq $null) {
+        if ($DSRegKeyProvider -eq "") {
             $DSRegKeyProvider = 'N/A'
         }
         else {
@@ -242,7 +242,7 @@ $SB = {
         }
 
         [string]$DSRegTpmProtected = ($DsregCmd | select-string -Pattern 'TpmProtected :')
-        if ($DSRegTpmProtected -eq $null) {
+        if ($DSRegTpmProtected -eq "") {
             $DSRegTpmProtected = 'N/A'
         }
         else {
@@ -250,7 +250,7 @@ $SB = {
         }
 
         [string]$DSRegDomainJoined = ($DsregCmd | select-string -Pattern 'DomainJoined :')
-        if ($DSRegDomainJoined -eq $null) {
+        if ($DSRegDomainJoined -eq "") {
             $DSRegDomainJoined = 'N/A'
         }
         else {
@@ -258,7 +258,7 @@ $SB = {
         }
 
         [string]$DSRegWorkplaceJoined = ($DsregCmd | select-string -Pattern 'WorkplaceJoined :')
-        if ($DSRegWorkplaceJoined -eq $null) {
+        if ($DSRegWorkplaceJoined -eq "") {
             $DSRegWorkplaceJoined = 'N/A'
         }
         else {
