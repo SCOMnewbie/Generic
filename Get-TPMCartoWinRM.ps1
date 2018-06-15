@@ -170,7 +170,7 @@ $SB = {
 "@
             $CustomEventSearch = $null
             $CustomEventSearch = Get-WinEvent -FilterXml $query -ErrorAction SilentlyContinue -ErrorVariable ErrCustomEventSearch
-            if ($ErrCustomEventSearch.Exception -match 'No events were found that match the specified selection criteria.') {
+            if ($ErrCustomEventSearch.FullyQualifiedErrorId -match 'NoMatchingEventsFound,Microsoft.PowerShell.Commands.GetWinEventCommand') {
                 [string]$EventFound = "false"
             }
             elseif ($CustomEventSearch.Count -ne 0) {
@@ -197,7 +197,7 @@ $SB = {
             $UserDRSErrors = $null
             $DRSErrorFound = ""
             $UserDRSErrors = Get-WinEvent -FilterXml $query2 -ErrorAction SilentlyContinue -ErrorVariable UserDRSErrorsEventSearch
-            if ($UserDRSErrorsEventSearch.Exception -match 'No events were found that match the specified selection criteria.') {
+            if ($UserDRSErrorsEventSearch.FullyQualifiedErrorId -match 'NoMatchingEventsFound,Microsoft.PowerShell.Commands.GetWinEventCommand') {
                 [string]$DRSErrorFound = "false"
             }
             elseif ($UserDRSErrors.Count -ne 0) {
