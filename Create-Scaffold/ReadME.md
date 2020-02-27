@@ -55,7 +55,7 @@ Create an hashtable with:
 
 - And the company name: -CompanyName
 
-So here an example:
+So here an example for Windows:
 
 ``` Powershell
 
@@ -68,6 +68,22 @@ $params = @{
 }
 
 .\create-BlankScaffold.ps1 @params
+
+```
+
+and for Linux
+
+``` Powershell
+
+$params = @{
+    ModuleName = 'BuildPsModule10'
+    Path = "/usr/local/src"
+    Author = 'Francois LEON'
+    Description = 'This module is to learn Azure Devops. It can be used for various possibilities'
+    CompanyName = 'Scomnewbie'
+}
+
+./create-BlankScaffold.ps1 @params
 
 ```
 
