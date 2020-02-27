@@ -76,3 +76,5 @@ And that's it, you should now see a new folder within your path filled with file
 ## To Do list:
 
 - I would like to add few other CI template (Github and Gitlab)
+  
+- Explain the .\build.ps1 script

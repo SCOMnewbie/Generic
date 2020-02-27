@@ -1,19 +1,45 @@
-﻿#Execute this script once repo has been sync with origin (.gitignore should exist)
-
-
-$ModuleName = 'BuildPsModule6'
-$Path = "C:\Git\AzureDevOps\$ModuleName"
-$Author = 'Francois LEON'
-$Description = 'This module is to learn Azure Devops. It can be used for various possibilities'
-$CompanyName = 'ScomNewbie'
+﻿Param(
+    [Parameter(
+        Mandatory,
+        HelpMessage = "Provide the name of your module"
+    )]
+    [ValidateNotNullorEmpty()]
+    [string]$ModuleName,
+    [Parameter(
+        Mandatory,
+        HelpMessage = "Provide path of your module"
+    )]
+    [validatescript( {if(Test-Path $_) {$true} else {Throw '-Path has to be a valid path'}})]
+    [string]$path,
+    [Parameter(
+        Mandatory,
+        HelpMessage = "Provide Author name"
+    )]
+    [ValidateNotNullorEmpty()]
+    [String]$Author,
+    [Parameter(
+        Mandatory,
+        HelpMessage = "Provide a proper description of your module"
+    )]
+    [ValidateNotNullorEmpty()]
+    [string]$Description,
+    [Parameter(
+        Mandatory,
+        HelpMessage = "Provide a company name"
+    )]
+    [ValidateNotNullorEmpty()]
+    [String]$CompanyName
+)
 
 #To plan the cross-platform
 # Nice article: https://powershell.org/2019/02/tips-for-writing-cross-platform-powershell-code/
 $DS = [io.path]::DirectorySeparatorChar
+$ErrorAction = 'Stop'
+$Fullpath = Join-Path $path $ModuleName
 
 #Create top module folder
-if( -not (Test-Path $Path)){
-    $null = mkdir $Path
+if( -not (Test-Path $Fullpath)){
+    $null = mkdir $Fullpath
 }
 
 #Create the .gitignorefile
@@ -21,7 +47,7 @@ $GitIgnore = @"
 *.xml
 *.txt
 "@
-$GitIgnore | Out-File -FilePath $(Join-Path $Path '.gitignore')
+$GitIgnore | Out-File -FilePath $(Join-Path $Fullpath '.gitignore')
 
 
 #Create the Azurepipeline file
@@ -73,7 +99,7 @@ stages:
             artifact: $ModuleName
 "@
 
-$AzurePipeline | Out-File -FilePath $(Join-Path $Path 'azure-pipelines.yml')
+$AzurePipeline | Out-File -FilePath $(Join-Path $Fullpath 'azure-pipelines.yml')
 
 
 #Create the build.ps1
@@ -252,7 +278,7 @@ if (`$PSBoundParameters.ContainsKey(`'Release`')) {
 }
 "@
 
-$BuildPs1 | Out-File -FilePath $(Join-Path $path 'Build.ps1')
+$BuildPs1 | Out-File -FilePath $(Join-Path $Fullpath 'Build.ps1')
 
 
 #Create README.md
@@ -272,7 +298,7 @@ Install-Module -Name $ModuleName
 This module was created AS IS with no warranty !
 "@
 
-$ReadMe | Out-File -FilePath $(Join-Path $path 'README.md')
+$ReadMe | Out-File -FilePath $(Join-Path $Fullpath 'README.md')
 
 #Create non compiled psm1
 $psm1 =@"
@@ -292,18 +318,18 @@ Export-ModuleMember -Function `$Public.Basename
 
 "@
 
-$TempPath = "{0}$DS{1}{2}" -f $Path,$ModuleName,'.psm1'
+$TempPath = "{0}$DS{1}{2}" -f $Fullpath,$ModuleName,'.psm1'
 $psm1 | Out-File -FilePath $TempPath
 
 # Create the module and private function directories
-$null = mkdir $(Join-Path $path $ModuleName)
-$null = mkdir $(Join-Path $path 'src')
-$TempPath = "{0}$DS{1}$DS{2}" -f $Path,'src','private'
+$null = mkdir $(Join-Path $Fullpath $ModuleName)
+$null = mkdir $(Join-Path $Fullpath 'src')
+$TempPath = "{0}$DS{1}$DS{2}" -f $Fullpath,'src','private'
 $null = mkdir $TempPath
-$TempPath = "{0}$DS{1}$DS{2}" -f $Path,'src','public'
+$TempPath = "{0}$DS{1}$DS{2}" -f $Fullpath,'src','public'
 $null = mkdir $TempPath
-$null = mkdir $(Join-Path $path 'test')
-$null = mkdir $(Join-Path $path 'docs')
+$null = mkdir $(Join-Path $Fullpath 'test')
+$null = mkdir $(Join-Path $Fullpath 'docs')
 
 #Create the first generic pester test
 $BasicPester =@"
@@ -321,7 +347,7 @@ Describe "`$ModuleName Module" {
 }
 "@
 
-$TempPath = "{0}$DS{1}$DS{2}{3}" -f $Path,'test',$Modulename,'.tests.ps1'
+$TempPath = "{0}$DS{1}$DS{2}{3}" -f $Fullpath,'test',$Modulename,'.tests.ps1'
 $BasicPester | Out-File -FilePath $TempPath
 
 #Create dummy advanced function to help in copy paste
@@ -362,11 +388,11 @@ function Add-TwoNumber
 }
 "@
 
-$TempPath = "{0}$DS{1}$DS{2}$DS{3}" -f $Path,'src','public','Add-TwoNumber.ps1'
+$TempPath = "{0}$DS{1}$DS{2}$DS{3}" -f $Fullpath,'src','public','Add-TwoNumber.ps1'
 $DummyPs1 | Out-File -FilePath $TempPath
 
 #Create the module and related files
-$TempPath = "{0}$DS{1}{2}" -f $Path,$ModuleName,'.psd1'
+$TempPath = "{0}$DS{1}{2}" -f $Fullpath,$ModuleName,'.psd1'
 $Splat =@{
     RootModule = "$ModuleName.psm1"
     CompanyName = $CompanyName
@@ -379,6 +405,6 @@ $Splat =@{
 New-ModuleManifest @Splat
 
 #Let's generalize the module version in the manifest (idea took from Adam Bertram)
-$TempPath = "{0}$DS{1}{2}" -f $Path,$ModuleName,'.psd1'
+$TempPath = "{0}$DS{1}{2}" -f $Fullpath,$ModuleName,'.psd1'
 $manifestContent = Get-Content -Path $TempPath -Raw
 $manifestContent -replace "ModuleVersion = '11.12.13'", "ModuleVersion = '<ModuleVersion>'" | Set-Content -Path $TempPath
