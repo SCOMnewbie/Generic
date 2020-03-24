@@ -26,7 +26,7 @@ PS: if you don’t know Universal Dashboard module, I strongly recommend to take
 
 Here a diagram that explain how SSL works:
 
-![SSL_overview](Images/SSL_overview.png)
+![SSL_overview](images/SSL_overview.png)
 
 ## How to implement a self-signed certificate <a name="How_to_implement_a_self-signed_certificate"></a>
 
@@ -34,7 +34,7 @@ There is plenty of ways to create self-signed certificates, I’ve decided to us
 
 Here what we will do:
 
-![Selfsignedcert_overview](Images/Selfsignedcert_overview.png)
+![Selfsignedcert_overview](images/Selfsignedcert_overview.png)
 
 In a run as admin PS console:
 
@@ -58,7 +58,7 @@ Now on **UD server**, you can import both pfx and cer certificates. You can put 
 
 Here how you make private key none exportable during import:
 
-![NoneExportablekey](Images/NoneExportablekey.png)
+![NoneExportablekey](images/NoneExportablekey.png)
 
 Now you can start your UD enpoint to listen ONLY on 443 if you do:
 
