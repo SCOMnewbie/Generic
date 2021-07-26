@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/powershell:latest
+
+ARG azcopyversion=10.6
+
+#Set working directory so stuff does not end up in /
+#WORKDIR /root
+
+#Install module
+SHELL ["pwsh", "-command", "$ErrorActionPreference = 'Stop';"]
+RUN apt-get update && apt-get install -y gnupg2 unzip groff keyutils curl && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && Invoke-RestMethod -Uri 'https://packages.cloud.google.com/apt/doc/apt-key.gpg' -OutFile /usr/share/keyrings/cloud.google.gpg && apt-key add /usr/share/keyrings/cloud.google.gpg && apt-get update -y && apt-get install google-cloud-sdk -y
+RUN Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+RUN Install-module az,powershell-yaml
+
+COPY ./Tools/* /tmp/
+
+RUN apt-get update && cd /tmp && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip && unzip awscliv2.zip && ./aws/install
+RUN mkdir /tmp/azcopy/ && tar -xzvf /tmp/azcopy.tar.gz -C /tmp/azcopy/ && cd /tmp/azcopy/az* && cp azcopy /usr/local/bin/
+
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
